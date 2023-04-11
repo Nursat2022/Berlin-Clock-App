@@ -9,24 +9,31 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var time = Date()
-    let columns: [GridItem] = [
-        .init(.fixed(74)),
-        .init(.fixed(74)),
-        .init(.fixed(74)),
-        .init(.fixed(74))
-    ]
+    let formatter = DateFormatter()
+    @State private var berlinClock: BerlinClock?
     
-    func getFormattedTime(date: Date) -> String {
-        let formatter = DateFormatter()
+//    func getStringDate() -> BerlinClock {
+//        let stringFormat = formatter.string(from: time)
+//        @State var clock = stringToClock(timeString: stringFormat)
+//         return BerlinClock(clock: $clock)
+//    }
+    
+    init() {
         formatter.dateFormat = "HH:mm:ss"
-        return formatter.string(from: date)
+        let stringFormat = formatter.string(from: time)
+        @State var clock = stringToClock(timeString: stringFormat)
+        berlinClock = BerlinClock(clock: $clock)
     }
     
-//    var clock = stringToClock(timeString: getFormattedTime(date: time))
-    
     var body: some View {
-        VStack(spacing: 10) {
-            Text("Time is \(getFormattedTime(date: time))")
+        formatter.dateFormat = "HH:mm:ss"
+        let stringFormat = formatter.string(from: time)
+        @State var clock = stringToClock(timeString: stringFormat)
+        berlinClock = BerlinClock(clock: $clock)
+        
+        return VStack(spacing: 10) {
+            
+            getDate(date: $time)
                 .fontWeight(.semibold)
             VStack(spacing: 16) {
                 Circle()
@@ -42,8 +49,6 @@ struct ContentView: View {
             .padding(.horizontal)
             .background(Color.white)
             .cornerRadius(12)
-            
-//            Text(berlinClock.hours)
             
             RoundedRectangle(cornerRadius: 12)
                 .fill(.white)
@@ -115,6 +120,18 @@ struct FourRects: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+    }
+}
+
+struct getDate: View {
+    @Binding var date: Date
+    var body: some View {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm:ss"
+        let stringFormat = formatter.string(from: date)
+        @State var clock = stringToClock(timeString: stringFormat)
+        var b = BerlinClock(clock: $clock)
+        return Text("Time is \(stringFormat)")
     }
 }
 
