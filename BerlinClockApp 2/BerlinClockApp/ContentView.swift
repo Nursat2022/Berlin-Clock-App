@@ -10,40 +10,60 @@ import SwiftUI
 struct ContentView: View {
     @State private var time = Date()
     let formatter = DateFormatter()
-    @State private var berlinClock: BerlinClock?
-    
-//    func getStringDate() -> BerlinClock {
-//        let stringFormat = formatter.string(from: time)
-//        @State var clock = stringToClock(timeString: stringFormat)
-//         return BerlinClock(clock: $clock)
-//    }
-    
-    init() {
-        formatter.dateFormat = "HH:mm:ss"
-        let stringFormat = formatter.string(from: time)
-        @State var clock = stringToClock(timeString: stringFormat)
-        berlinClock = BerlinClock(clock: $clock)
-    }
-    
+    @State private var berlinClock: String = "YOOOOOOOOOOOOOOOOOOOOOOO"
+    var timer: Timer?
+        
     var body: some View {
-        formatter.dateFormat = "HH:mm:ss"
-        let stringFormat = formatter.string(from: time)
-        @State var clock = stringToClock(timeString: stringFormat)
-        berlinClock = BerlinClock(clock: $clock)
         
         return VStack(spacing: 10) {
-            
-            getDate(date: $time)
+//            Text("\(berlinClock)")
+            getDate(date: $time, berlinEntire: $berlinClock)
+                .onAppear {
+                    Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
+                        time = time.addingTimeInterval(1)
+                    }
+                }
                 .fontWeight(.semibold)
             VStack(spacing: 16) {
+                let berlin = Array(berlinClock)
                 Circle()
                     .frame(width: 56, height: 56)
-                    .foregroundColor(Color(red: 255/255, green: 204/255, blue: 0/255))
+                    .foregroundColor(String(berlin[0]) == "O" ? Color(red: 255/255, green: 224/255, blue: 102/255) : Color(red: 255/255, green: 204/255, blue: 0/255))
                 
-                FourRects()
-                FourRects()
-                FiveMinRow()
-                FourRects()
+                HStack {
+                    ForEach(1..<5) { i in
+                        bigRect(color: String(berlin[i]) == "O" ? Color(red: 255/255, green: 137/255, blue: 131/255) : Color(red: 255/255, green: 59/255, blue: 48/255))
+                    }
+                }
+                HStack {
+                    ForEach(5..<9) { i in
+                        bigRect(color: String(berlin[i]) == "O" ? Color(red: 255/255, green: 137/255, blue: 131/255) : Color(red: 255/255, green: 59/255, blue: 48/255))
+                    }
+                }
+                HStack {
+                    ForEach(9..<20) { i in
+                        if String(berlin[i]) != "O" && (i == 11 || i == 14 || i == 17) {
+                            smallRect(color: Color(red: 255/255, green: 59/255, blue: 48/255))
+                        }
+                        else if String(berlin[i]) != "O" {
+                            smallRect(color: Color(red: 255/255, green: 204/255, blue: 0))
+                        }
+                        else {
+                            if i == 11 || i == 14 || i == 17 {
+                                smallRect(color: Color(red: 255/255, green: 137/255, blue: 131/255))
+                            }
+                            else {
+                                smallRect(color: Color(red: 255/255, green: 224/255, blue: 102/255))
+                            }
+                        }
+                    }
+                }
+                
+                HStack {
+                    ForEach(20..<berlin.count) { i in
+                        bigRect(color: String(berlin[i]) == "O" ? Color(red: 255/255, green: 224/255, blue: 102/255) : Color(red: 255/255, green: 204/255, blue: 0))
+                    }
+                }
             }
             .padding(.vertical, 32)
             .padding(.horizontal)
@@ -66,57 +86,66 @@ struct ContentView: View {
         .frame(width: UIScreen.main.bounds.width)
         .background(Color(red: 242/255, green: 242/255, blue: 238/255))
     }
-}
-
-struct bigRect: View {
-    var body: some View {
-        RoundedRectangle(cornerRadius: 4)
-            .frame(width: 74, height: 32)
-            .foregroundColor(Color(red: 255/255, green: 59/255, blue: 48/255))
+    
+    func updateTimer() {
+        Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: { [ self](_) in self.time.addingTimeInterval(1)
+                   })
     }
 }
 
+struct bigRect: View {
+    var color: Color
+    var body: some View {
+        RoundedRectangle(cornerRadius: 4)
+            .frame(width: 74, height: 32)
+            .foregroundColor(color)
+    }
+}
+
+
+
 struct smallRect: View {
+    var color: Color
     var width: CGFloat = 21
     var body: some View {
         RoundedRectangle(cornerRadius: 2)
             .frame(width: width, height: 32)
-            .foregroundColor(Color(red: 255/255, green: 204/255, blue: 0))
+            .foregroundColor(color)
     }
 }
 
-struct FiveMinRow: View {
-    var body: some View {
-        HStack(spacing: 10) {
-            Group {
-                smallRect()
-                smallRect()
-                smallRect()
-                smallRect(width: 20)
-                smallRect(width: 20)
-            }
-            Group {
-                smallRect(width: 20)
-                smallRect(width: 20)
-                smallRect(width: 20)
-                smallRect()
-                smallRect()
-                smallRect()
-            }
-        }
-    }
-}
+//struct FiveMinRow: View {
+//    var body: some View {
+//        HStack(spacing: 10) {
+//            Group {
+//                smallRect()
+//                smallRect()
+//                smallRect()
+//                smallRect(width: 20)
+//                smallRect(width: 20)
+//            }
+//            Group {
+//                smallRect(width: 20)
+//                smallRect(width: 20)
+//                smallRect(width: 20)
+//                smallRect()
+//                smallRect()
+//                smallRect()
+//            }
+//        }
+//    }
+//}
 
-struct FourRects: View {
-    var body: some View {
-        HStack(spacing: 10) {
-            bigRect()
-            bigRect()
-            bigRect()
-            bigRect()
-        }
-    }
-}
+//struct FourRects: View {
+//    var body: some View {
+//        HStack(spacing: 10) {
+////            bigRect()
+////            bigRect()
+////            bigRect()
+////            bigRect()
+//        }
+//    }
+//}
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
@@ -125,12 +154,14 @@ struct ContentView_Previews: PreviewProvider {
 
 struct getDate: View {
     @Binding var date: Date
+    @Binding var berlinEntire: String
     var body: some View {
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm:ss"
         let stringFormat = formatter.string(from: date)
         @State var clock = stringToClock(timeString: stringFormat)
         var b = BerlinClock(clock: $clock)
+        berlinEntire = b.entireClock
         return Text("Time is \(stringFormat)")
     }
 }
@@ -170,11 +201,5 @@ struct BerlinClock {
     var entireClock: String {
         seconds + hours + singleHours + minutes + singleMinutes
     }
-    
-//    var clock: Clock
-    
-//    init(clock: Clock) {
-//        self.clock = clock
-//    }
 }
 
