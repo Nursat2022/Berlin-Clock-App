@@ -11,15 +11,11 @@ struct ContentView: View {
     @State private var time = Date()
     let formatter = DateFormatter()
     @State private var berlinClock: String = "YOOOOOOOOOOOOOOOOOOOOOOO"
-    var timer: Timer?
-        
     var body: some View {
         let berlin = Array(berlinClock)
         return VStack(spacing: 10) {
-            Text("\(berlinClock)")
             getDate(date: $time, berlinEntire: $berlinClock)
                 .onAppear {
-//                    print("yes")
                     updateTimer()
                 }
                 .fontWeight(.semibold)
@@ -114,38 +110,7 @@ struct smallRect: View {
     }
 }
 
-//struct FiveMinRow: View {
-//    var body: some View {
-//        HStack(spacing: 10) {
-//            Group {
-//                smallRect()
-//                smallRect()
-//                smallRect()
-//                smallRect(width: 20)
-//                smallRect(width: 20)
-//            }
-//            Group {
-//                smallRect(width: 20)
-//                smallRect(width: 20)
-//                smallRect(width: 20)
-//                smallRect()
-//                smallRect()
-//                smallRect()
-//            }
-//        }
-//    }
-//}
 
-//struct FourRects: View {
-//    var body: some View {
-//        HStack(spacing: 10) {
-////            bigRect()
-////            bigRect()
-////            bigRect()
-////            bigRect()
-//        }
-//    }
-//}
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
