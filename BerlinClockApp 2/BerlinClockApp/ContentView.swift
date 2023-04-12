@@ -14,52 +14,51 @@ struct ContentView: View {
     var timer: Timer?
         
     var body: some View {
-        
+        let berlin = Array(berlinClock)
         return VStack(spacing: 10) {
-//            Text("\(berlinClock)")
+            Text("\(berlinClock)")
             getDate(date: $time, berlinEntire: $berlinClock)
                 .onAppear {
-                    Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
-                        time = time.addingTimeInterval(1)
-                    }
+//                    print("yes")
+                    updateTimer()
                 }
                 .fontWeight(.semibold)
+            
             VStack(spacing: 16) {
-                let berlin = Array(berlinClock)
                 Circle()
                     .frame(width: 56, height: 56)
                     .foregroundColor(String(berlin[0]) == "O" ? Color(red: 255/255, green: 224/255, blue: 102/255) : Color(red: 255/255, green: 204/255, blue: 0/255))
                 
-                HStack {
+                HStack(spacing: 10) {
                     ForEach(1..<5) { i in
                         bigRect(color: String(berlin[i]) == "O" ? Color(red: 255/255, green: 137/255, blue: 131/255) : Color(red: 255/255, green: 59/255, blue: 48/255))
                     }
                 }
-                HStack {
+                HStack(spacing: 10) {
                     ForEach(5..<9) { i in
                         bigRect(color: String(berlin[i]) == "O" ? Color(red: 255/255, green: 137/255, blue: 131/255) : Color(red: 255/255, green: 59/255, blue: 48/255))
                     }
                 }
-                HStack {
+                HStack(spacing: 10) {
                     ForEach(9..<20) { i in
                         if String(berlin[i]) != "O" && (i == 11 || i == 14 || i == 17) {
-                            smallRect(color: Color(red: 255/255, green: 59/255, blue: 48/255))
+                            smallRect(color: Color(red: 255/255, green: 59/255, blue: 48/255), width: i >= 12 && i <= 16 ? 20 : 21)
                         }
                         else if String(berlin[i]) != "O" {
-                            smallRect(color: Color(red: 255/255, green: 204/255, blue: 0))
+                            smallRect(color: Color(red: 255/255, green: 204/255, blue: 0), width: i >= 12 && i <= 16 ? 20 : 21)
                         }
                         else {
                             if i == 11 || i == 14 || i == 17 {
-                                smallRect(color: Color(red: 255/255, green: 137/255, blue: 131/255))
+                                smallRect(color: Color(red: 255/255, green: 137/255, blue: 131/255), width: i >= 12 && i <= 16 ? 20 : 21)
                             }
                             else {
-                                smallRect(color: Color(red: 255/255, green: 224/255, blue: 102/255))
+                                smallRect(color: Color(red: 255/255, green: 224/255, blue: 102/255), width: i >= 12 && i <= 16 ? 20 : 21)
                             }
                         }
                     }
                 }
                 
-                HStack {
+                HStack(spacing: 10) {
                     ForEach(20..<berlin.count) { i in
                         bigRect(color: String(berlin[i]) == "O" ? Color(red: 255/255, green: 224/255, blue: 102/255) : Color(red: 255/255, green: 204/255, blue: 0))
                     }
@@ -88,8 +87,9 @@ struct ContentView: View {
     }
     
     func updateTimer() {
-        Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: { [ self](_) in self.time.addingTimeInterval(1)
-                   })
+        Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
+            time = time.addingTimeInterval(1)
+        }
     }
 }
 
