@@ -10,11 +10,10 @@ import SwiftUI
 struct ContentView: View {
     @State private var time = Date()
     let formatter = DateFormatter()
-    @State private var berlinClock: String = "YOOOOOOOOOOOOOOOOOOOOOOO"
     var body: some View {
-        let berlin = Array(berlinClock)
+        let berlin = Array(toBerlin(date: time))
         return VStack(spacing: 10) {
-            getDate(date: $time, berlinEntire: $berlinClock)
+            getDate(date: $time)
                 .onAppear {
                     updateTimer()
                 }
@@ -98,8 +97,6 @@ struct bigRect: View {
     }
 }
 
-
-
 struct smallRect: View {
     var color: Color
     var width: CGFloat = 21
@@ -111,6 +108,20 @@ struct smallRect: View {
 }
 
 
+
+func dateToString(date: Date) -> String {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "HH:mm:ss"
+    let stringFormat = formatter.string(from: date)
+    return stringFormat
+}
+
+func toBerlin(date: Date) -> String {
+   var stringFormat = dateToString(date: date)
+    var berinClock = BerlinClock(clock: stringToClock(timeString: stringFormat)).entireClock
+    return berinClock
+}
+
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
@@ -119,20 +130,14 @@ struct ContentView_Previews: PreviewProvider {
 
 struct getDate: View {
     @Binding var date: Date
-    @Binding var berlinEntire: String
     var body: some View {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "HH:mm:ss"
-        let stringFormat = formatter.string(from: date)
-        @State var clock = stringToClock(timeString: stringFormat)
-        var b = BerlinClock(clock: $clock)
-        berlinEntire = b.entireClock
+        var stringFormat = dateToString(date: date)
         return Text("Time is \(stringFormat)")
     }
 }
 
 struct BerlinClock {
-    @Binding var clock: Clock
+    var clock: Clock
     
     var seconds: String {
         clock.seconds % 2 == 0 ? "Y" : "O"
